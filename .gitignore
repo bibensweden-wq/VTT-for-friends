@@ -1,0 +1,11 @@
+node_modules/
+**/dist/
+data/*.sqlite
+data/*.sqlite-*
+uploads/maps/*
+!uploads/maps/.gitkeep
+uploads/tokens/*
+!uploads/tokens/.gitkeep
+.env
+.DS_Store
+*.log
