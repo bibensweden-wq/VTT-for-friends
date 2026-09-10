@@ -1,0 +1,15 @@
+{
+  "name": "vtt-for-friends",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently -k -n server,client \"npm run dev -w @vtt/server\" \"npm run dev -w @vtt/client\"",
+    "build": "npm run build -w @vtt/shared && npm run build -w @vtt/client && npm run build -w @vtt/server",
+    "test": "npm run test -w @vtt/server",
+    "start": "npm run start -w @vtt/server",
+    "predev": "npm run build -w @vtt/shared"
+  },
+  "devDependencies": {"concurrently": "^9.1.2", "typescript": "^5.8.2"},
+  "engines": {"node": ">=22"}
+}
