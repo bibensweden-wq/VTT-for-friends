@@ -5,9 +5,10 @@ import path from 'node:path';
 export const PROJECT_ROOT = path.resolve(fileURLToPath(new URL('../../../../', import.meta.url)));
 
 // Runtime state can live on a persistent cloud volume without moving the built client.
-export const RUNTIME_ROOT = process.env.VTT_DATA_ROOT
-  ? path.resolve(process.env.VTT_DATA_ROOT)
-  : PROJECT_ROOT;
+// Railway exposes its attached volume mount path automatically; VTT_DATA_ROOT remains
+// available as a provider-agnostic override for other hosts/self-hosting setups.
+const runtimeRoot = process.env.VTT_DATA_ROOT || process.env.RAILWAY_VOLUME_MOUNT_PATH;
+export const RUNTIME_ROOT = runtimeRoot ? path.resolve(runtimeRoot) : PROJECT_ROOT;
 
 export const DATA_DIR = path.join(RUNTIME_ROOT, 'data');
 export const UPLOADS_DIR = path.join(RUNTIME_ROOT, 'uploads');
