@@ -21,6 +21,10 @@ interface Props {
   onMoveToken: (id: string, x: number, y: number) => void;
 }
 
+function snapCoordinate(value: number, offset: number, gridSize: number) {
+  return Math.round((value - offset) / gridSize) * gridSize + offset;
+}
+
 export function GameCanvas(props: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<Application | null>(null);
@@ -255,7 +259,15 @@ export function GameCanvas(props: Props) {
 
         const drag = dragRef.current;
         if (drag) {
-          propsRef.current.onMoveToken(drag.tokenId, drag.display.x, drag.display.y);
+          let x = drag.display.x;
+          let y = drag.display.y;
+          const scene = propsRef.current.scene;
+          if (scene.snapToGrid) {
+            x = snapCoordinate(x, scene.gridOffsetX, scene.gridSize);
+            y = snapCoordinate(y, scene.gridOffsetY, scene.gridSize);
+            drag.display.position.set(x, y);
+          }
+          propsRef.current.onMoveToken(drag.tokenId, x, y);
           dragRef.current = null;
         }
       };
