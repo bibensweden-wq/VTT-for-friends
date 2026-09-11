@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import type { PublicGameState } from '@vtt/shared';
+import { TokenEditor } from './components/TokenEditor';
 import { GameCanvas } from './game/GameCanvas';
 import {
   clearSession,
@@ -202,21 +203,13 @@ export default function App() {
           </section>
 
           {gm && selectedToken && (
-            <section>
-              <h3>Edit {selectedToken.name}</h3>
-              <label>Name<input value={selectedToken.name} onChange={(event) => emit('token:update', { tokenId: selectedToken.id, patch: { name: event.target.value } })} /></label>
-              <div className="threecol">
-                <label>HP<input type="number" value={selectedToken.hp} onChange={(event) => emit('token:update', { tokenId: selectedToken.id, patch: { hp: Number(event.target.value) } })} /></label>
-                <label>Max<input type="number" value={selectedToken.maxHp} onChange={(event) => emit('token:update', { tokenId: selectedToken.id, patch: { maxHp: Number(event.target.value) } })} /></label>
-                <label>AC<input type="number" value={selectedToken.ac} onChange={(event) => emit('token:update', { tokenId: selectedToken.id, patch: { ac: Number(event.target.value) } })} /></label>
-              </div>
-              <label>Owner<select value={selectedToken.ownerId ?? ''} onChange={(event) => emit('token:update', { tokenId: selectedToken.id, patch: { ownerId: event.target.value || null } })}>
-                <option value="">None</option>
-                {state.players.filter((player) => player.role === 'player').map((player) => <option key={player.id} value={player.id}>{player.name}</option>)}
-              </select></label>
-              <label className="check"><input type="checkbox" checked={selectedToken.hidden} onChange={(event) => emit('token:update', { tokenId: selectedToken.id, patch: { hidden: event.target.checked } })} />Hidden</label>
-              <button className="danger full" onClick={() => { emit('token:delete', { tokenId: selectedToken.id }); setSelected(null); }}>Delete</button>
-            </section>
+            <TokenEditor
+              key={selectedToken.id}
+              token={selectedToken}
+              players={state.players}
+              onUpdate={(patch) => emit('token:update', { tokenId: selectedToken.id, patch })}
+              onDelete={() => { emit('token:delete', { tokenId: selectedToken.id }); setSelected(null); }}
+            />
           )}
         </aside>
 
